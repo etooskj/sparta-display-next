@@ -360,7 +360,7 @@ select{background:#20232c;color:#fff;border:1px solid var(--stroke);border-radiu
 @media(max-width:700px){.noticeCard{padding:32px 22px;border-radius:24px}.noticeCloseHint{display:none}}
 
 
-/* ===== JJUN Central Display V7 ===== */
+/* ===== JJUN Central Display V8.1 ===== */
 #centralWidgets{position:fixed;left:24px;right:24px;bottom:14px;z-index:42;display:flex;gap:10px;align-items:center;pointer-events:none}
 .centralChip{border:1px solid rgba(255,255,255,.16);background:rgba(10,13,20,.78);backdrop-filter:blur(14px);border-radius:16px;padding:9px 13px;color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.28)}
 #centralDday{font-weight:950;white-space:nowrap}#centralMotto{flex:1;font-weight:850;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,.86)}#centralConn{font-size:12px;color:rgba(255,255,255,.65)}
@@ -369,7 +369,72 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
 #awardOverlay.show{display:flex}.awardWrap{width:min(1200px,94vw)}.awardTitle{font-size:clamp(34px,5vw,74px);font-weight:950;margin-bottom:22px}.awardPodium{display:grid;grid-template-columns:1fr 1.18fr 1fr;align-items:end;gap:14px;height:min(56vh,520px)}.awardStep{border:1px solid rgba(255,255,255,.18);border-radius:24px 24px 8px 8px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:22px 12px;font-weight:950;box-shadow:0 20px 60px rgba(0,0,0,.35);animation:podiumIn .7s both}.awardStep.one{height:100%;background:linear-gradient(180deg,#ffe680,#b98606)}.awardStep.two{height:82%;background:linear-gradient(180deg,#f8fbff,#8491a3);animation-delay:.18s}.awardStep.three{height:67%;background:linear-gradient(180deg,#ffcda8,#9a5730);animation-delay:.05s}.awardMedal{font-size:58px}.awardName{font-size:clamp(26px,3vw,50px);margin-top:10px}.awardScore{font-size:clamp(18px,1.8vw,30px);opacity:.86;margin-top:8px}@keyframes podiumIn{from{transform:translateY(120%);opacity:0}to{transform:translateY(0);opacity:1}}
 .confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none}.confetti i{position:absolute;width:9px;height:18px;background:#fff;top:-30px;animation:fall linear infinite}@keyframes fall{to{transform:translateY(110vh) rotate(900deg)}}
 </style>
-</head>
+<style>
+.centralGoalBox{position:fixed;left:18px;bottom:18px;z-index:35;max-width:min(720px,65vw);background:rgba(12,18,31,.88);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);border-radius:15px;padding:10px 14px;color:#fff;font-weight:800;box-shadow:0 12px 30px #0007}.centralGoalBox .gt{font-size:12px;opacity:.65;margin-bottom:5px}.centralGoalBox .gi{display:inline-flex;margin-right:12px;gap:5px;align-items:center}.centralGoalBox .done{opacity:.6;text-decoration:line-through}.noticeOverlay.show~#centralWidgets .centralGoalBox,.noticeOverlay.show~#centralWidgets #centralRotating{display:none!important}
+
+/* ===== Display V8.1.1 visual refinement ===== */
+.sideCard{
+  grid-template-rows:auto auto auto;
+  align-content:start;
+  gap:10px;
+  padding:18px;
+}
+.threeRows{
+  justify-content:flex-start;
+  gap:8px;
+  min-height:auto;
+}
+.slot{
+  min-height:68px;
+  padding:10px 13px;
+  grid-template-columns:72px minmax(0,1fr) 62px;
+  border-radius:15px;
+}
+.slot.current{min-height:84px}
+.slot .time{font-size:17px}
+.slot .name{font-size:20px}
+.slot .desc{font-size:13px;margin-top:2px}
+.slot.current .name{font-size:25px}
+.slot.current .desc{font-size:14px}
+.sideFoot{margin-top:2px}
+
+/* 배경에는 원본 로고의 방패 심볼 부분만 크게 보이도록 크롭해서 사용 */
+.hero::after{
+  width:min(650px,48vw);
+  height:min(760px,72vh);
+  right:3%;
+  bottom:2%;
+  background-size:1600px auto;
+  background-position:-55px -145px;
+  background-repeat:no-repeat;
+  opacity:.24;
+  mix-blend-mode:multiply;
+  filter:brightness(1.75) saturate(1.25) contrast(1.08);
+}
+:root.theme-light .hero::after{
+  opacity:.13;
+  mix-blend-mode:multiply;
+  filter:saturate(1.1) contrast(1.04);
+}
+
+/* V8 목표 카드가 있을 경우 오늘 일정 바로 아래에 배치해 빈 공간을 활용 */
+.sideCard #centralGoals{
+  position:static!important;
+  left:auto!important;right:auto!important;bottom:auto!important;
+  z-index:auto!important;
+  max-width:none!important;
+  width:100%;
+  margin:2px 0 0;
+  box-shadow:none;
+  pointer-events:auto;
+}
+.sideCard #centralGoals .gt{font-size:13px;font-weight:950}
+.sideCard #centralGoals .gi{display:flex;margin:6px 0 0;padding:7px 9px;border:1px solid rgba(255,255,255,.10);border-radius:10px}
+
+/* 테마 자동 상태 강조 */
+#themeBtn.theme-auto{border-color:rgba(223,171,45,.82);box-shadow:inset 0 0 0 1px rgba(223,171,45,.18)}
+
+</style></head>
 <body class="mode-open">
 <div class="app">
   <header>
@@ -449,7 +514,7 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
       <div id="threeRows" class="threeRows"></div>
       <div class="sideFoot">
         <div class="smallCard"><div class="k">운영 기준</div><div class="v" id="dayModeLabel">월~토 의무학습</div></div>
-        <div class="smallCard"><div class="k">버전</div><div class="v">V5.0</div></div>
+        <div class="smallCard"><div class="k">버전</div><div class="v">V8.1</div></div>
       </div>
     </aside>
   </main>
@@ -583,7 +648,7 @@ const defaultSettings = {
   bellVol:70,
   voiceVol:100,
   bellProfile:"classic",
-  theme:"dark"
+  theme:"auto"
 };
 
 let settings = loadSettings();
@@ -624,7 +689,35 @@ function applySettingsUI(){
   $("bellVol").value=settings.bellVol;$("voiceVol").value=settings.voiceVol;
   $("bellVolText").textContent=settings.bellVol+"%";$("voiceVolText").textContent=settings.voiceVol+"%";
   $("bellProfile").value=settings.bellProfile;
-  document.documentElement.classList.toggle("theme-light",settings.theme==="light");
+  applyResolvedTheme();
+  updateThemeButton();
+}
+function resolveAutoTheme(found=null,d=null){
+  d=d||kstNow();
+  // 수업/의무학습·야간은 집중을 위해 다크, 휴식·식사·오픈은 주간에 라이트.
+  // 야간(18:00~07:00)은 구간과 관계없이 다크를 유지합니다.
+  const hour=d.getHours();
+  if(hour>=18||hour<7)return "dark";
+  if(found&&found.item){
+    const t=found.item.type;
+    if(t==="class"||t==="night")return "dark";
+    if(t==="break"||t==="meal"||t==="open")return "light";
+  }
+  return "dark";
+}
+function applyResolvedTheme(found=null,d=null){
+  const mode=settings.theme||"auto";
+  const resolved=mode==="auto"?resolveAutoTheme(found,d):mode;
+  document.documentElement.classList.toggle("theme-light",resolved==="light");
+  document.documentElement.dataset.themeMode=mode;
+  document.documentElement.dataset.themeResolved=resolved;
+}
+function updateThemeButton(){
+  const b=$("themeBtn");if(!b)return;
+  const mode=settings.theme||"auto";
+  b.classList.toggle("theme-auto",mode==="auto");
+  b.textContent=mode==="auto"?"🌗 테마 자동":mode==="dark"?"🌙 테마 다크":"☀️ 테마 라이트";
+  b.title="클릭할 때마다 자동 → 다크 → 라이트 순으로 변경됩니다.";
 }
 function pullSettingsUI(){
   ["warnBreakEnd","warnMealEnd","warnClassEnd","stage5","stage1","stage0"].forEach(id=>settings[id]=$(id).checked);
@@ -788,6 +881,7 @@ function tick(){
   const d=kstNow();$("nowClock").textContent=fmtClock(d);updateDayBanner(d);
   const nowSec=d.getHours()*3600+d.getMinutes()*60+d.getSeconds();
   const found=findCurrent(nowSec);
+  if((settings.theme||"auto")==="auto")applyResolvedTheme(found,d);
   if(!found){
     setMode("open");$("statusText").textContent="운영 시간 외";$("title").textContent="운영 시간 외";
     $("subtitle").textContent="06:00~23:00 시간표 범위 밖입니다.";
@@ -838,7 +932,7 @@ $("pwCancel").addEventListener("click",()=>$("unlockModal").classList.remove("sh
 $("pwInput").addEventListener("keydown",e=>{if(e.key==="Enter")unlockAdmin()});
 
 $("fullBtn").addEventListener("click",async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(e){}});
-$("themeBtn").addEventListener("click",()=>{settings.theme=settings.theme==="light"?"dark":"light";applySettingsUI();persistSettings()});
+$("themeBtn").addEventListener("click",()=>{const order=["auto","dark","light"];const cur=order.includes(settings.theme)?settings.theme:"auto";settings.theme=order[(order.indexOf(cur)+1)%order.length];applySettingsUI();persistSettings()});
 ["soundStatus","voiceStatus","audioStatus"].forEach(id=>$(id).addEventListener("click",()=>activateAudio(true)));
 $("audioGateBtn").addEventListener("click",()=>activateAudio(true));
 
@@ -850,6 +944,8 @@ $("saveSettings").addEventListener("click",()=>{pullSettingsUI();persistSettings
 $("resetSettings").addEventListener("click",()=>{settings=Object.assign({},defaultSettings);applySettingsUI();persistSettings()});
 
 window.addEventListener("load",async()=>{
+  const goals=document.getElementById("centralGoals"), side=document.querySelector(".sideCard"), foot=side?.querySelector(".sideFoot");
+  if(goals&&side&&foot)side.insertBefore(goals,foot);
   applySettingsUI();updateStatusButtons();tick();
   setInterval(tick,1000);setInterval(watchdog,1500);
   // 자동 활성화를 먼저 시도하고, 브라우저 정책으로 막히면 클릭 안내를 띄움
@@ -886,13 +982,13 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
 })();
 </script>
 
-<div id="centralWidgets"><div id="centralDday" class="centralChip" style="display:none"></div><div id="centralMotto" class="centralChip" style="display:none"></div><div id="centralConn" class="centralChip">JJUN Central 연결 중…</div></div>
+<div id="centralWidgets"><div id="centralDday" class="centralChip" style="display:none"></div><div id="centralMotto" class="centralChip" style="display:none"></div><div id="centralRotating" class="centralChip" style="display:none"></div><div id="centralGoals" class="centralGoalBox" style="display:none"></div><div id="centralConn" class="centralChip">JJUN Central 연결 중…</div></div>
 <div id="awardOverlay"><div class="confetti" id="confetti"></div><div class="awardWrap"><div id="awardTitleView" class="awardTitle">오늘의 TOP 3</div><div class="awardPodium"><div class="awardStep two"><div class="awardMedal">🥈</div><div id="award2NameView" class="awardName">-</div><div id="award2ScoreView" class="awardScore"></div></div><div class="awardStep one"><div class="awardMedal">🥇</div><div id="award1NameView" class="awardName">-</div><div id="award1ScoreView" class="awardScore"></div></div><div class="awardStep three"><div class="awardMedal">🥉</div><div id="award3NameView" class="awardName">-</div><div id="award3ScoreView" class="awardScore"></div></div></div></div></div>
 
 <script>
-// ===== JJUN Central Display V7 runtime =====
+// ===== JJUN Central Display V8.1 runtime =====
 (function initJjunCentralV7(){
-  const VERSION='7.0';
+  const VERSION='8.1';
   const params=new URLSearchParams(location.search),screenId=params.get('screen')||localStorage.getItem('jjun.display.screenId')||('display-'+Math.random().toString(36).slice(2,9)),group=params.get('group')||localStorage.getItem('jjun.display.group')||'studyroom';
   localStorage.setItem('jjun.display.screenId',screenId);localStorage.setItem('jjun.display.group',group);
   if(!window.firebase?.database)return;
@@ -910,8 +1006,13 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
   // Screen-target guard for current notices: if another group is targeted, hide overlay immediately.
   db.ref('display/currentNotice').on('value',s=>{const n=s.val();if(n&&!targetOk(n)){const ov=document.getElementById('noticeOverlay');if(ov)ov.classList.remove('show')}});
   function confetti(){const box=document.getElementById('confetti');if(!box)return;box.innerHTML='';for(let i=0;i<55;i++){const x=document.createElement('i');x.style.left=Math.random()*100+'%';x.style.animationDuration=(2+Math.random()*3)+'s';x.style.animationDelay=(-Math.random()*3)+'s';x.style.background=['#ffd84d','#fff','#ff6b78','#6da3ff','#8fe5b6'][i%5];box.appendChild(x)}}
-  function showAward(a){clearTimeout(awardTimer);const ov=document.getElementById('awardOverlay');if(!a||a.enabled===false){ov?.classList.remove('show');return}document.getElementById('awardTitleView').textContent=a.title||'오늘의 TOP 3';for(let r=1;r<=3;r++){const p=(a.places||[]).find(x=>Number(x.rank)===r)||{};document.getElementById(`award${r}NameView`).textContent=p.name||'-';document.getElementById(`award${r}ScoreView`).textContent=p.score||''}confetti();ov?.classList.add('show');awardTimer=setTimeout(()=>ov?.classList.remove('show'),Math.max(5,Number(a.durationSec||15))*1000)}
+  function showAward(a){clearTimeout(awardTimer);const ov=document.getElementById('awardOverlay');if(!a||a.enabled===false){ov?.classList.remove('show');return}document.getElementById('awardTitleView').textContent=a.title||'오늘의 TOP 3';for(let r=1;r<=3;r++){const p=(a.places||[]).find(x=>Number(x.rank)===r)||{};const names=String(p.name||'').split(/[\n,]+/).map(x=>x.trim()).filter(Boolean);document.getElementById(`award${r}NameView`).textContent=(names.length>1?'공동 '+r+'위 · ':'')+(names.join(' · ')||'-');document.getElementById(`award${r}ScoreView`).textContent=p.score||''}confetti();ov?.classList.add('show');awardTimer=setTimeout(()=>ov?.classList.remove('show'),Math.max(5,Number(a.durationSec||15))*1000)}
   db.ref('display/currentAward').on('value',s=>showAward(s.val()));
+  let rotation={enabled:false,intervalSec:60,messages:[]},rotationIndex=0,rotationTimer=null;
+  function renderRotation(){const el=document.getElementById('centralRotating');if(!el)return;const msgs=rotation.messages||[];if(rotation.enabled!==false&&msgs.length){el.style.display='block';el.textContent='💬 '+msgs[rotationIndex%msgs.length];rotationIndex=(rotationIndex+1)%msgs.length}else el.style.display='none'}
+  function scheduleRotation(){clearInterval(rotationTimer);renderRotation();rotationTimer=setInterval(renderRotation,Math.max(10,Number(rotation.intervalSec)||60)*1000)}
+  db.ref('display/messageRotation').on('value',s=>{rotation={enabled:true,intervalSec:60,messages:[],...(s.val()||{})};rotationIndex=0;scheduleRotation()});
+  db.ref('display/dailyGoals').on('value',s=>{const el=document.getElementById('centralGoals'),d=s.val();if(!el)return;if(!d||!(d.goals||[]).length){el.style.display='none';el.innerHTML='';return}const today=new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Seoul'});if(d.date&&d.date!==today){el.style.display='none';return}el.style.display='block';el.innerHTML='<div class="gt">🎯 오늘의 목표</div>'+d.goals.map(g=>`<span class="gi ${g.done?'done':''}">${g.done?'✓':'○'} ${String(g.text||'').replace(/[<>&]/g,'')}</span>`).join('')});
   window.addEventListener('resize',heartbeat);
 })();
 </script>
