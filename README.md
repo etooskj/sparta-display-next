@@ -1,1 +1,15 @@
-# sparta-display-next
+# 쭌에듀 × 스파르타 Display V6.0
+
+## GitHub Pages 업로드
+1. 이 ZIP 파일의 `index.html`을 `etooskj.github.io/sparta-display` 저장소의 기존 `index.html`에 덮어씁니다.
+2. Commit changes를 누릅니다.
+3. 1~3분 뒤 전광판 브라우저에서 Ctrl+Shift+R로 새로고침합니다.
+
+## ERP 공지 연동
+- ERP 우측 상단 `학습실 전광판` → `공지 관리`에서 즉시 공지, 예약 공지, 반복 공지를 관리합니다.
+- 일반 공지는 지정 시간 후 자동으로 닫히고 기존 시간표 화면으로 복귀합니다.
+- 긴급 공지는 `ERP에서 내릴 때까지 유지`를 선택할 수 있습니다.
+- 예약 공지는 전광판이 켜져 있는 동안 시작·종료 시각에 맞춰 자동 송출됩니다.
+
+## 기본 관리자 비밀번호
+`sam1101!`
