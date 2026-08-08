@@ -360,7 +360,7 @@ select{background:#20232c;color:#fff;border:1px solid var(--stroke);border-radiu
 @media(max-width:700px){.noticeCard{padding:32px 22px;border-radius:24px}.noticeCloseHint{display:none}}
 
 
-/* ===== JJUN Central Display V8.2 ===== */
+/* ===== JJUN Central Display V8.3 ===== */
 #centralWidgets{position:fixed;left:24px;right:24px;bottom:14px;z-index:42;display:flex;gap:10px;align-items:center;pointer-events:none}
 .centralChip{border:1px solid rgba(255,255,255,.16);background:rgba(10,13,20,.78);backdrop-filter:blur(14px);border-radius:16px;padding:9px 13px;color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.28)}
 #centralDday{font-weight:950;white-space:nowrap}#centralMotto{flex:1;font-weight:850;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,.86)}#centralConn{font-size:12px;color:rgba(255,255,255,.65)}
@@ -372,7 +372,7 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
 <style>
 .centralGoalBox{position:fixed;left:18px;bottom:18px;z-index:35;max-width:min(720px,65vw);background:rgba(12,18,31,.88);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);border-radius:15px;padding:10px 14px;color:#fff;font-weight:800;box-shadow:0 12px 30px #0007}.centralGoalBox .gt{font-size:12px;opacity:.65;margin-bottom:5px}.centralGoalBox .gi{display:inline-flex;margin-right:12px;gap:5px;align-items:center}.centralGoalBox .done{opacity:.6;text-decoration:line-through}.noticeOverlay.show~#centralWidgets .centralGoalBox,.noticeOverlay.show~#centralWidgets #centralRotating{display:none!important}
 
-/* ===== Display V8.2.1 visual refinement ===== */
+/* ===== Display V8.3.1 visual refinement ===== */
 .sideCard{
   grid-template-rows:auto auto auto;
   align-content:start;
@@ -434,6 +434,29 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
 
 /* 테마 자동 상태 강조 */
 #themeBtn.theme-auto{border-color:rgba(223,171,45,.82);box-shadow:inset 0 0 0 1px rgba(223,171,45,.18)}
+
+/* ===== Display V8.3 notice layouts ===== */
+.noticeTicker{position:fixed;left:16px;right:16px;bottom:14px;z-index:999998;min-height:72px;display:none;align-items:center;gap:16px;padding:10px 18px;border:1px solid rgba(255,255,255,.18);border-radius:18px;background:rgba(11,17,31,.96);color:#fff;box-shadow:0 16px 50px #0008;backdrop-filter:blur(14px)}
+.noticeTicker.show{display:flex;animation:noticeFade .18s ease-out}
+.tickerType{flex:0 0 auto;padding:9px 13px;border-radius:999px;background:#ecebff;color:#3c45a4;font-size:17px;font-weight:950;white-space:nowrap}
+.tickerViewport{flex:1;min-width:0;overflow:hidden;white-space:nowrap}
+.tickerText{display:inline-block;min-width:100%;font-size:clamp(22px,2vw,34px);font-weight:900;letter-spacing:-.4px;white-space:nowrap;animation:tickerMove 14s linear infinite}
+.tickerTimer{flex:0 0 auto;color:#cbd5e1;font-weight:850;font-size:14px;white-space:nowrap}
+@keyframes tickerMove{0%,8%{transform:translateX(0)}92%,100%{transform:translateX(min(0px,calc(-100% + 55vw)))}}
+.noticeTicker.type-urgent{background:rgba(115,18,28,.97);border-color:#ff7b86}.noticeTicker.type-urgent .tickerType{background:#ffe0e2;color:#a01420}
+.noticeTicker.type-exam{background:rgba(77,55,4,.96);border-color:#e7be51}.noticeTicker.type-praise{background:rgba(4,75,45,.96);border-color:#5dd49c}
+.sideNotice{display:none;min-height:160px;margin-top:2px;padding:16px;border:1px solid rgba(124,145,190,.36);border-radius:18px;background:linear-gradient(145deg,rgba(82,92,130,.20),rgba(255,255,255,.035));overflow:hidden}
+.sideNotice.show{display:flex;flex:1;flex-direction:column;animation:noticeFade .2s ease-out}
+.sideNoticeTop{display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--muted);font-size:13px;font-weight:900}
+#sideNoticeType{display:inline-flex;padding:7px 10px;border-radius:999px;background:rgba(104,85,231,.20);color:#c9c3ff}
+.sideNoticeTitle{font-size:clamp(25px,2.2vw,38px);line-height:1.14;font-weight:950;margin-top:16px;letter-spacing:-1px}
+.sideNoticeMessage{font-size:clamp(17px,1.45vw,25px);line-height:1.5;font-weight:750;margin-top:12px;white-space:pre-wrap;color:var(--muted)}
+.sideNoticeBar{height:7px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;margin-top:auto}.sideNoticeBar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#7d68ff,#5f9cff);transform-origin:left}
+.sideNotice.type-urgent{border-color:rgba(255,91,104,.72);background:linear-gradient(145deg,rgba(131,31,42,.36),rgba(255,255,255,.035))}.sideNotice.type-urgent #sideNoticeType{background:rgba(255,91,104,.18);color:#ffb5bc}
+:root.theme-light .noticeTicker{background:rgba(255,255,255,.96);color:#111827;border-color:#ccd5e6}.theme-light .tickerTimer{color:#667085}
+:root.theme-light .sideNotice{background:linear-gradient(145deg,#f7f5ff,#fff);border-color:#d9d4ff;color:#17223d}.theme-light .sideNoticeMessage{color:#526078}
+body.notice-ticker-active #centralWidgets{display:none!important}
+@media(max-width:900px){.noticeTicker{left:8px;right:8px;bottom:8px;border-radius:14px;min-height:62px}.tickerType{font-size:14px}.sideNotice{min-height:130px}}
 
 </style></head>
 <body class="mode-open">
@@ -515,8 +538,14 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
       <div id="threeRows" class="threeRows"></div>
       <div class="sideFoot">
         <div class="smallCard"><div class="k">운영 기준</div><div class="v" id="dayModeLabel">월~토 의무학습</div></div>
-        <div class="smallCard"><div class="k">버전</div><div class="v">V8.2</div></div>
+        <div class="smallCard"><div class="k">버전</div><div class="v">V8.3</div></div>
       </div>
+      <section id="sideNotice" class="sideNotice" aria-live="polite">
+        <div class="sideNoticeTop"><span id="sideNoticeType">📢 공지</span><span id="sideNoticeTimer"></span></div>
+        <div id="sideNoticeTitle" class="sideNoticeTitle"></div>
+        <div id="sideNoticeMessage" class="sideNoticeMessage"></div>
+        <div class="sideNoticeBar"><i id="sideNoticeBar"></i></div>
+      </section>
     </aside>
   </main>
 </div>
@@ -588,6 +617,12 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
 
 <div id="toast" class="toast"></div>
 
+
+<div id="noticeTicker" class="noticeTicker" aria-live="polite">
+  <div id="tickerType" class="tickerType">📢 공지</div>
+  <div class="tickerViewport"><div id="tickerText" class="tickerText"></div></div>
+  <div id="tickerTimer" class="tickerTimer"></div>
+</div>
 
 <div id="noticeOverlay" class="noticeOverlay" aria-live="assertive">
   <section id="noticeCard" class="noticeCard">
@@ -972,13 +1007,38 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
   function activeWindow(n,t=now()){const st=ts(n.startAt||n.startAtMs),en=ts(n.endAt||n.endAtMs);return n.enabled!==false&&n.status!=='ended'&&(!st||t>=st)&&(!en||t<=en)}
   function chooseScheduled(){const t=now();return Object.entries(scheduled||{}).map(([id,n])=>({id,...n})).filter(n=>activeWindow(n,t)).sort((a,b)=>(Number(b.priority||0)-Number(a.priority||0))||(ts(b.createdAtMs||b.createdAt)-ts(a.createdAtMs||a.createdAt)))[0]||null}
   function canShow(n){if(!n)return false;const t=now(),dur=Math.max(3,Number(n.durationSec||10))*1000,rep=Math.max(0,Number(n.repeatMinutes||0))*60000,last=Number(lastShown[n.id]||0);if(n.sticky)return true;if(rep>0)return !last||t-last>=rep;return !last}
-  function hideNotice(mark=true){clearTimeout(hideTimer);hideTimer=null;overlay.classList.remove('show');if(mark&&visibleId){lastShown[visibleId]=now();try{localStorage.setItem('sparta.display.notice.lastShown',JSON.stringify(lastShown))}catch(_){}}visibleId=null}
+  const ticker=document.getElementById('noticeTicker'),tickerType=document.getElementById('tickerType'),tickerText=document.getElementById('tickerText'),tickerTimer=document.getElementById('tickerTimer');
+  const sideNotice=document.getElementById('sideNotice'),sideType=document.getElementById('sideNoticeType'),sideTitle=document.getElementById('sideNoticeTitle'),sideMessage=document.getElementById('sideNoticeMessage'),sideTimer=document.getElementById('sideNoticeTimer'),sideBar=document.getElementById('sideNoticeBar');
+  function anyNoticeVisible(){return overlay.classList.contains('show')||ticker.classList.contains('show')||sideNotice.classList.contains('show')}
+  function hideNotice(mark=true){clearTimeout(hideTimer);hideTimer=null;overlay.classList.remove('show');ticker.classList.remove('show');sideNotice.classList.remove('show');document.body.classList.remove('notice-ticker-active');if(mark&&visibleId){lastShown[visibleId]=now();try{localStorage.setItem('sparta.display.notice.lastShown',JSON.stringify(lastShown))}catch(_){}}visibleId=null}
   function playNoticeSound(n){if(!n||n.sound==='none'||!n.sound)return;try{playBell(n.type==='urgent'?'strong':'class')}catch(_){};if(n.sound==='voice'){setTimeout(()=>{try{speak(`${n.title||'공지'}. ${n.message||''}`)}catch(_){}},400)}}
-  function showNotice(n){if(!n||!canShow(n))return;if(visibleId===n.id&&overlay.classList.contains('show'))return;clearTimeout(hideTimer);visibleId=n.id;card.className=`noticeCard type-${n.type||'general'} ${n.mode==='full'?'mode-full':''}`;typeEl.textContent=`${icons[n.type]||'📢'} ${labels[n.type]||'전체 공지'}`;titleEl.textContent=n.title||'안내';messageEl.textContent=n.message||'';const sec=Math.max(3,Math.min(3600,Number(n.durationSec||10)));metaEl.textContent=n.sticky?'ERP에서 공지를 내릴 때까지 표시됩니다.':`${sec}초 동안 표시됩니다.`;progress.style.display=n.sticky?'none':'block';progress.innerHTML='<i></i>';const bar=progress.firstElementChild;if(bar)bar.style.animationDuration=sec+'s';overlay.classList.add('show');playNoticeSound(n);if(!n.sticky)hideTimer=setTimeout(()=>hideNotice(true),sec*1000)}
-  function evaluate(){const t=now();let n=null;if(immediate&&activeWindow(immediate,t))n={id:immediate.id||'current',...immediate};else n=chooseScheduled();if(!n){if(overlay.classList.contains('show'))hideNotice(false);return}showNotice(n)}
-  rtdb.ref('display/currentNotice').on('value',s=>{immediate=s.val();if(!immediate&&visibleId&&String(visibleId).startsWith('current'))hideNotice(false);evaluate()},e=>console.warn('[DISPLAY currentNotice]',e.message));
+  function showNotice(n){
+    if(!n||!canShow(n))return;
+    const mode=n.mode||'popup';
+    if(visibleId===n.id&&anyNoticeVisible())return;
+    clearTimeout(hideTimer); hideNotice(false); visibleId=n.id;
+    const sec=Math.max(3,Math.min(3600,Number(n.durationSec||10)));
+    const icon=icons[n.type]||'📢', label=labels[n.type]||'전체 공지';
+    if(mode==='ticker'){
+      ticker.className=`noticeTicker type-${n.type||'general'} show`;
+      tickerType.textContent=`${icon} ${label}`;
+      tickerText.textContent=[n.title,n.message].filter(Boolean).join('  ·  ');
+      tickerTimer.textContent=n.sticky?'상시':`${sec}초`;
+      document.body.classList.add('notice-ticker-active');
+    }else if(mode==='side'||mode==='panel'){
+      sideNotice.className=`sideNotice type-${n.type||'general'} show`;
+      sideType.textContent=`${icon} ${label}`; sideTitle.textContent=n.title||'안내'; sideMessage.textContent=n.message||''; sideTimer.textContent=n.sticky?'상시':`${sec}초`;
+      sideBar.style.animation='none'; void sideBar.offsetWidth; sideBar.style.animation=n.sticky?'none':`noticeCountdown ${sec}s linear forwards`;
+    }else{
+      card.className=`noticeCard type-${n.type||'general'} ${mode==='full'?'mode-full':''}`;
+      typeEl.textContent=`${icon} ${label}`;titleEl.textContent=n.title||'안내';messageEl.textContent=n.message||'';metaEl.textContent=n.sticky?'ERP에서 공지를 내릴 때까지 표시됩니다.':`${sec}초 동안 표시됩니다.`;progress.style.display=n.sticky?'none':'block';progress.innerHTML='<i></i>';const bar=progress.firstElementChild;if(bar)bar.style.animationDuration=sec+'s';overlay.classList.add('show');
+    }
+    playNoticeSound(n);if(!n.sticky)hideTimer=setTimeout(()=>hideNotice(true),sec*1000)
+  }
+  function evaluate(){const t=now();let n=null;if(immediate&&activeWindow(immediate,t))n={id:immediate.id||'current',...immediate};else n=chooseScheduled();if(!n){if(anyNoticeVisible())hideNotice(false);return}showNotice(n)}
+  rtdb.ref('display/currentNotice').on('value',s=>{immediate=s.val();if(!immediate&&visibleId)hideNotice(false);evaluate()},e=>console.warn('[DISPLAY currentNotice]',e.message));
   rtdb.ref('display/notices').on('value',s=>{scheduled=s.val()||{};evaluate()},e=>console.warn('[DISPLAY notices]',e.message));
-  // V8.2 compatibility: JJUN Central의 현재/향후 공지 경로명 변경에도 동일 화면에서 수신
+  // V8.3 compatibility: JJUN Central의 현재/향후 공지 경로명 변경에도 동일 화면에서 수신
   ['display/currentBroadcast','jjunCentral/currentNotice'].forEach(path=>{
     rtdb.ref(path).on('value',s=>{const v=s.val();if(v){immediate=v;evaluate()}},e=>console.warn('[DISPLAY alias '+path+']',e.message));
   });
@@ -991,7 +1051,7 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
 <div id="awardOverlay"><div class="confetti" id="confetti"></div><div class="awardWrap"><div id="awardTitleView" class="awardTitle">오늘의 TOP 3</div><div class="awardPodium"><div class="awardStep two"><div class="awardMedal">🥈</div><div id="award2NameView" class="awardName">-</div><div id="award2ScoreView" class="awardScore"></div></div><div class="awardStep one"><div class="awardMedal">🥇</div><div id="award1NameView" class="awardName">-</div><div id="award1ScoreView" class="awardScore"></div></div><div class="awardStep three"><div class="awardMedal">🥉</div><div id="award3NameView" class="awardName">-</div><div id="award3ScoreView" class="awardScore"></div></div></div></div></div>
 
 <script>
-// ===== JJUN Central Display V8.2 runtime =====
+// ===== JJUN Central Display V8.3 runtime =====
 (function initJjunCentralV7(){
   const VERSION='8.2';
   const params=new URLSearchParams(location.search),screenId=params.get('screen')||localStorage.getItem('jjun.display.screenId')||('display-'+Math.random().toString(36).slice(2,9)),group=params.get('group')||localStorage.getItem('jjun.display.group')||'studyroom';
@@ -1009,7 +1069,7 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
   function recurrenceOk(n,now){const r=n.repeatRule||'none';if(r==='none'||r==='10m'||r==='30m'||r==='60m')return true;const st=new Date(Number(n.startAtMs||0)),d=new Date(now);if(!n.startAtMs)return true;const sameTime=d.getHours()===st.getHours()&&d.getMinutes()===st.getMinutes();if(!sameTime)return false;if(r==='daily')return true;if(r==='weekdays')return d.getDay()>=1&&d.getDay()<=5;if(r==='saturday')return d.getDay()===6;return true}
   setInterval(()=>{const now=Date.now();Object.values(scheduled).forEach(n=>{if(!targetOk(n)||n.enabled===false||n.status==='ended'||!recurrenceOk(n,now))return;/* V6 listener handles normal repeatMinutes; daily rules are copied to current for a short activation window */if(['daily','weekdays','saturday'].includes(n.repeatRule)){const st=new Date(Number(n.startAtMs||0)),d=new Date(now);if(d.getSeconds()<3&&d.getHours()===st.getHours()&&d.getMinutes()===st.getMinutes())db.ref('display/currentNotice').set({...n,publishedAtMs:now}).catch(()=>{})}})},1000);
   // Screen-target guard for current notices: if another group is targeted, hide overlay immediately.
-  db.ref('display/currentNotice').on('value',s=>{const n=s.val();if(n&&!targetOk(n)){const ov=document.getElementById('noticeOverlay');if(ov)ov.classList.remove('show')}});
+  db.ref('display/currentNotice').on('value',s=>{const n=s.val();if(n&&!targetOk(n)){document.getElementById('noticeOverlay')?.classList.remove('show');document.getElementById('noticeTicker')?.classList.remove('show');document.getElementById('sideNotice')?.classList.remove('show')}});
   function confetti(){const box=document.getElementById('confetti');if(!box)return;box.innerHTML='';for(let i=0;i<55;i++){const x=document.createElement('i');x.style.left=Math.random()*100+'%';x.style.animationDuration=(2+Math.random()*3)+'s';x.style.animationDelay=(-Math.random()*3)+'s';x.style.background=['#ffd84d','#fff','#ff6b78','#6da3ff','#8fe5b6'][i%5];box.appendChild(x)}}
   function showAward(a){clearTimeout(awardTimer);const ov=document.getElementById('awardOverlay');if(!a||a.enabled===false){ov?.classList.remove('show');return}document.getElementById('awardTitleView').textContent=a.title||'오늘의 TOP 3';for(let r=1;r<=3;r++){const p=(a.places||[]).find(x=>Number(x.rank)===r)||{};const names=String(p.name||'').split(/[\n,]+/).map(x=>x.trim()).filter(Boolean);document.getElementById(`award${r}NameView`).textContent=(names.length>1?'공동 '+r+'위 · ':'')+(names.join(' · ')||'-');document.getElementById(`award${r}ScoreView`).textContent=p.score||''}confetti();ov?.classList.add('show');awardTimer=setTimeout(()=>ov?.classList.remove('show'),Math.max(5,Number(a.durationSec||15))*1000)}
   db.ref('display/currentAward').on('value',s=>showAward(s.val()));
