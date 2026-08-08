@@ -360,7 +360,7 @@ select{background:#20232c;color:#fff;border:1px solid var(--stroke);border-radiu
 @media(max-width:700px){.noticeCard{padding:32px 22px;border-radius:24px}.noticeCloseHint{display:none}}
 
 
-/* ===== JJUN Central Display V8.3 ===== */
+/* ===== JJUN Central Display V8.4 ===== */
 #centralWidgets{position:fixed;left:24px;right:24px;bottom:14px;z-index:42;display:flex;gap:10px;align-items:center;pointer-events:none}
 .centralChip{border:1px solid rgba(255,255,255,.16);background:rgba(10,13,20,.78);backdrop-filter:blur(14px);border-radius:16px;padding:9px 13px;color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.28)}
 #centralDday{font-weight:950;white-space:nowrap}#centralMotto{flex:1;font-weight:850;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,.86)}#centralConn{font-size:12px;color:rgba(255,255,255,.65)}
@@ -372,7 +372,7 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
 <style>
 .centralGoalBox{position:fixed;left:18px;bottom:18px;z-index:35;max-width:min(720px,65vw);background:rgba(12,18,31,.88);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);border-radius:15px;padding:10px 14px;color:#fff;font-weight:800;box-shadow:0 12px 30px #0007}.centralGoalBox .gt{font-size:12px;opacity:.65;margin-bottom:5px}.centralGoalBox .gi{display:inline-flex;margin-right:12px;gap:5px;align-items:center}.centralGoalBox .done{opacity:.6;text-decoration:line-through}.noticeOverlay.show~#centralWidgets .centralGoalBox,.noticeOverlay.show~#centralWidgets #centralRotating{display:none!important}
 
-/* ===== Display V8.3.1 visual refinement ===== */
+/* ===== Display V8.4.1 visual refinement ===== */
 .sideCard{
   grid-template-rows:auto auto auto;
   align-content:start;
@@ -435,7 +435,7 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
 /* 테마 자동 상태 강조 */
 #themeBtn.theme-auto{border-color:rgba(223,171,45,.82);box-shadow:inset 0 0 0 1px rgba(223,171,45,.18)}
 
-/* ===== Display V8.3 notice layouts ===== */
+/* ===== Display V8.4 notice layouts ===== */
 .noticeTicker{position:fixed;left:16px;right:16px;bottom:14px;z-index:999998;min-height:72px;display:none;align-items:center;gap:16px;padding:10px 18px;border:1px solid rgba(255,255,255,.18);border-radius:18px;background:rgba(11,17,31,.96);color:#fff;box-shadow:0 16px 50px #0008;backdrop-filter:blur(14px)}
 .noticeTicker.show{display:flex;animation:noticeFade .18s ease-out}
 .tickerType{flex:0 0 auto;padding:9px 13px;border-radius:999px;background:#ecebff;color:#3c45a4;font-size:17px;font-weight:950;white-space:nowrap}
@@ -457,6 +457,20 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
 :root.theme-light .sideNotice{background:linear-gradient(145deg,#f7f5ff,#fff);border-color:#d9d4ff;color:#17223d}.theme-light .sideNoticeMessage{color:#526078}
 body.notice-ticker-active #centralWidgets{display:none!important}
 @media(max-width:900px){.noticeTicker{left:8px;right:8px;bottom:8px;border-radius:14px;min-height:62px}.tickerType{font-size:14px}.sideNotice{min-height:130px}}
+/* V8.4 - 우측 중간~하단의 남는 공간을 공지 패널로 사용 */
+body.notice-side-active .sideCard{
+  grid-template-rows:auto auto auto minmax(220px,1fr)!important;
+  align-content:stretch!important;
+}
+body.notice-side-active .sideNotice.show{
+  min-height:220px;
+  height:100%;
+  margin-top:0;
+}
+body.notice-side-active .threeRows{justify-content:flex-start!important}
+body.notice-side-active .sideNoticeTitle{font-size:clamp(30px,2.5vw,44px)}
+body.notice-side-active .sideNoticeMessage{font-size:clamp(19px,1.65vw,29px)}
+
 
 </style></head>
 <body class="mode-open">
@@ -538,7 +552,7 @@ body.notice-ticker-active #centralWidgets{display:none!important}
       <div id="threeRows" class="threeRows"></div>
       <div class="sideFoot">
         <div class="smallCard"><div class="k">운영 기준</div><div class="v" id="dayModeLabel">월~토 의무학습</div></div>
-        <div class="smallCard"><div class="k">버전</div><div class="v">V8.3</div></div>
+        <div class="smallCard"><div class="k">버전</div><div class="v">V8.4</div></div>
       </div>
       <section id="sideNotice" class="sideNotice" aria-live="polite">
         <div class="sideNoticeTop"><span id="sideNoticeType">📢 공지</span><span id="sideNoticeTimer"></span></div>
@@ -1010,7 +1024,7 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
   const ticker=document.getElementById('noticeTicker'),tickerType=document.getElementById('tickerType'),tickerText=document.getElementById('tickerText'),tickerTimer=document.getElementById('tickerTimer');
   const sideNotice=document.getElementById('sideNotice'),sideType=document.getElementById('sideNoticeType'),sideTitle=document.getElementById('sideNoticeTitle'),sideMessage=document.getElementById('sideNoticeMessage'),sideTimer=document.getElementById('sideNoticeTimer'),sideBar=document.getElementById('sideNoticeBar');
   function anyNoticeVisible(){return overlay.classList.contains('show')||ticker.classList.contains('show')||sideNotice.classList.contains('show')}
-  function hideNotice(mark=true){clearTimeout(hideTimer);hideTimer=null;overlay.classList.remove('show');ticker.classList.remove('show');sideNotice.classList.remove('show');document.body.classList.remove('notice-ticker-active');if(mark&&visibleId){lastShown[visibleId]=now();try{localStorage.setItem('sparta.display.notice.lastShown',JSON.stringify(lastShown))}catch(_){}}visibleId=null}
+  function hideNotice(mark=true){clearTimeout(hideTimer);hideTimer=null;overlay.classList.remove('show');ticker.classList.remove('show');sideNotice.classList.remove('show');document.body.classList.remove('notice-ticker-active','notice-side-active');if(mark&&visibleId){lastShown[visibleId]=now();try{localStorage.setItem('sparta.display.notice.lastShown',JSON.stringify(lastShown))}catch(_){}}visibleId=null}
   function playNoticeSound(n){if(!n||n.sound==='none'||!n.sound)return;try{playBell(n.type==='urgent'?'strong':'class')}catch(_){};if(n.sound==='voice'){setTimeout(()=>{try{speak(`${n.title||'공지'}. ${n.message||''}`)}catch(_){}},400)}}
   function showNotice(n){
     if(!n||!canShow(n))return;
@@ -1028,7 +1042,7 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
     }else if(mode==='side'||mode==='panel'){
       sideNotice.className=`sideNotice type-${n.type||'general'} show`;
       sideType.textContent=`${icon} ${label}`; sideTitle.textContent=n.title||'안내'; sideMessage.textContent=n.message||''; sideTimer.textContent=n.sticky?'상시':`${sec}초`;
-      sideBar.style.animation='none'; void sideBar.offsetWidth; sideBar.style.animation=n.sticky?'none':`noticeCountdown ${sec}s linear forwards`;
+      sideBar.style.animation='none'; void sideBar.offsetWidth; sideBar.style.animation=n.sticky?'none':`noticeCountdown ${sec}s linear forwards`; document.body.classList.add('notice-side-active');
     }else{
       card.className=`noticeCard type-${n.type||'general'} ${mode==='full'?'mode-full':''}`;
       typeEl.textContent=`${icon} ${label}`;titleEl.textContent=n.title||'안내';messageEl.textContent=n.message||'';metaEl.textContent=n.sticky?'ERP에서 공지를 내릴 때까지 표시됩니다.':`${sec}초 동안 표시됩니다.`;progress.style.display=n.sticky?'none':'block';progress.innerHTML='<i></i>';const bar=progress.firstElementChild;if(bar)bar.style.animationDuration=sec+'s';overlay.classList.add('show');
@@ -1038,7 +1052,7 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
   function evaluate(){const t=now();let n=null;if(immediate&&activeWindow(immediate,t))n={id:immediate.id||'current',...immediate};else n=chooseScheduled();if(!n){if(anyNoticeVisible())hideNotice(false);return}showNotice(n)}
   rtdb.ref('display/currentNotice').on('value',s=>{immediate=s.val();if(!immediate&&visibleId)hideNotice(false);evaluate()},e=>console.warn('[DISPLAY currentNotice]',e.message));
   rtdb.ref('display/notices').on('value',s=>{scheduled=s.val()||{};evaluate()},e=>console.warn('[DISPLAY notices]',e.message));
-  // V8.3 compatibility: JJUN Central의 현재/향후 공지 경로명 변경에도 동일 화면에서 수신
+  // V8.4 compatibility: JJUN Central의 현재/향후 공지 경로명 변경에도 동일 화면에서 수신
   ['display/currentBroadcast','jjunCentral/currentNotice'].forEach(path=>{
     rtdb.ref(path).on('value',s=>{const v=s.val();if(v){immediate=v;evaluate()}},e=>console.warn('[DISPLAY alias '+path+']',e.message));
   });
@@ -1051,7 +1065,7 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
 <div id="awardOverlay"><div class="confetti" id="confetti"></div><div class="awardWrap"><div id="awardTitleView" class="awardTitle">오늘의 TOP 3</div><div class="awardPodium"><div class="awardStep two"><div class="awardMedal">🥈</div><div id="award2NameView" class="awardName">-</div><div id="award2ScoreView" class="awardScore"></div></div><div class="awardStep one"><div class="awardMedal">🥇</div><div id="award1NameView" class="awardName">-</div><div id="award1ScoreView" class="awardScore"></div></div><div class="awardStep three"><div class="awardMedal">🥉</div><div id="award3NameView" class="awardName">-</div><div id="award3ScoreView" class="awardScore"></div></div></div></div></div>
 
 <script>
-// ===== JJUN Central Display V8.3 runtime =====
+// ===== JJUN Central Display V8.4 runtime =====
 (function initJjunCentralV7(){
   const VERSION='8.2';
   const params=new URLSearchParams(location.search),screenId=params.get('screen')||localStorage.getItem('jjun.display.screenId')||('display-'+Math.random().toString(36).slice(2,9)),group=params.get('group')||localStorage.getItem('jjun.display.group')||'studyroom';
