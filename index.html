@@ -360,7 +360,7 @@ select{background:#20232c;color:#fff;border:1px solid var(--stroke);border-radiu
 @media(max-width:700px){.noticeCard{padding:32px 22px;border-radius:24px}.noticeCloseHint{display:none}}
 
 
-/* ===== JJUN Central Display V8.1 ===== */
+/* ===== JJUN Central Display V8.2 ===== */
 #centralWidgets{position:fixed;left:24px;right:24px;bottom:14px;z-index:42;display:flex;gap:10px;align-items:center;pointer-events:none}
 .centralChip{border:1px solid rgba(255,255,255,.16);background:rgba(10,13,20,.78);backdrop-filter:blur(14px);border-radius:16px;padding:9px 13px;color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.28)}
 #centralDday{font-weight:950;white-space:nowrap}#centralMotto{flex:1;font-weight:850;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,.86)}#centralConn{font-size:12px;color:rgba(255,255,255,.65)}
@@ -372,7 +372,7 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
 <style>
 .centralGoalBox{position:fixed;left:18px;bottom:18px;z-index:35;max-width:min(720px,65vw);background:rgba(12,18,31,.88);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);border-radius:15px;padding:10px 14px;color:#fff;font-weight:800;box-shadow:0 12px 30px #0007}.centralGoalBox .gt{font-size:12px;opacity:.65;margin-bottom:5px}.centralGoalBox .gi{display:inline-flex;margin-right:12px;gap:5px;align-items:center}.centralGoalBox .done{opacity:.6;text-decoration:line-through}.noticeOverlay.show~#centralWidgets .centralGoalBox,.noticeOverlay.show~#centralWidgets #centralRotating{display:none!important}
 
-/* ===== Display V8.1.1 visual refinement ===== */
+/* ===== Display V8.2.1 visual refinement ===== */
 .sideCard{
   grid-template-rows:auto auto auto;
   align-content:start;
@@ -398,23 +398,24 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
 .slot.current .desc{font-size:14px}
 .sideFoot{margin-top:2px}
 
-/* 배경에는 원본 로고의 방패 심볼 부분만 크게 보이도록 크롭해서 사용 */
+/* V8.2 - 배경에는 원본 로고의 방패 심볼만 크게 표시.
+   다크 테마에서는 밝은 워터마크로 바꿔 시인성을 확보한다. */
 .hero::after{
-  width:min(650px,48vw);
-  height:min(760px,72vh);
-  right:3%;
-  bottom:2%;
-  background-size:1600px auto;
-  background-position:-55px -145px;
+  width:min(720px,52vw);
+  height:min(800px,76vh);
+  right:1.5%;
+  bottom:-1%;
+  background-size:1640px auto;
+  background-position:-52px -142px;
   background-repeat:no-repeat;
-  opacity:.24;
-  mix-blend-mode:multiply;
-  filter:brightness(1.75) saturate(1.25) contrast(1.08);
+  opacity:.20;
+  mix-blend-mode:screen;
+  filter:grayscale(1) invert(1) brightness(1.45) contrast(1.18);
 }
 :root.theme-light .hero::after{
-  opacity:.13;
+  opacity:.12;
   mix-blend-mode:multiply;
-  filter:saturate(1.1) contrast(1.04);
+  filter:grayscale(.25) saturate(1.05) contrast(1.08);
 }
 
 /* V8 목표 카드가 있을 경우 오늘 일정 바로 아래에 배치해 빈 공간을 활용 */
@@ -514,7 +515,7 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
       <div id="threeRows" class="threeRows"></div>
       <div class="sideFoot">
         <div class="smallCard"><div class="k">운영 기준</div><div class="v" id="dayModeLabel">월~토 의무학습</div></div>
-        <div class="smallCard"><div class="k">버전</div><div class="v">V8.1</div></div>
+        <div class="smallCard"><div class="k">버전</div><div class="v">V8.2</div></div>
       </div>
     </aside>
   </main>
@@ -977,6 +978,10 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
   function evaluate(){const t=now();let n=null;if(immediate&&activeWindow(immediate,t))n={id:immediate.id||'current',...immediate};else n=chooseScheduled();if(!n){if(overlay.classList.contains('show'))hideNotice(false);return}showNotice(n)}
   rtdb.ref('display/currentNotice').on('value',s=>{immediate=s.val();if(!immediate&&visibleId&&String(visibleId).startsWith('current'))hideNotice(false);evaluate()},e=>console.warn('[DISPLAY currentNotice]',e.message));
   rtdb.ref('display/notices').on('value',s=>{scheduled=s.val()||{};evaluate()},e=>console.warn('[DISPLAY notices]',e.message));
+  // V8.2 compatibility: JJUN Central의 현재/향후 공지 경로명 변경에도 동일 화면에서 수신
+  ['display/currentBroadcast','jjunCentral/currentNotice'].forEach(path=>{
+    rtdb.ref(path).on('value',s=>{const v=s.val();if(v){immediate=v;evaluate()}},e=>console.warn('[DISPLAY alias '+path+']',e.message));
+  });
   setInterval(evaluate,1000);
   window.addEventListener('online',evaluate);
 })();
@@ -986,9 +991,9 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
 <div id="awardOverlay"><div class="confetti" id="confetti"></div><div class="awardWrap"><div id="awardTitleView" class="awardTitle">오늘의 TOP 3</div><div class="awardPodium"><div class="awardStep two"><div class="awardMedal">🥈</div><div id="award2NameView" class="awardName">-</div><div id="award2ScoreView" class="awardScore"></div></div><div class="awardStep one"><div class="awardMedal">🥇</div><div id="award1NameView" class="awardName">-</div><div id="award1ScoreView" class="awardScore"></div></div><div class="awardStep three"><div class="awardMedal">🥉</div><div id="award3NameView" class="awardName">-</div><div id="award3ScoreView" class="awardScore"></div></div></div></div></div>
 
 <script>
-// ===== JJUN Central Display V8.1 runtime =====
+// ===== JJUN Central Display V8.2 runtime =====
 (function initJjunCentralV7(){
-  const VERSION='8.1';
+  const VERSION='8.2';
   const params=new URLSearchParams(location.search),screenId=params.get('screen')||localStorage.getItem('jjun.display.screenId')||('display-'+Math.random().toString(36).slice(2,9)),group=params.get('group')||localStorage.getItem('jjun.display.group')||'studyroom';
   localStorage.setItem('jjun.display.screenId',screenId);localStorage.setItem('jjun.display.group',group);
   if(!window.firebase?.database)return;
