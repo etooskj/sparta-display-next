@@ -744,7 +744,7 @@ html.entrance-tv.theme-light .hero::after{
     document.documentElement.classList.add("entrance-tv");
     window.addEventListener("DOMContentLoaded",()=>{
       const versionNode=[...document.querySelectorAll(".smallCard .v")].find(el=>/^V8\.1/.test((el.textContent||"").trim()));
-      if(versionNode) versionNode.textContent="V8.1 · TV1.4";
+      if(versionNode) versionNode.textContent="V8.1 · TV1.5";
     });
   }
 })();
@@ -1293,18 +1293,18 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
   const typeEl=document.getElementById('noticeType'),titleEl=document.getElementById('noticeTitle'),messageEl=document.getElementById('noticeMessage'),metaEl=document.getElementById('noticeMeta'),progress=document.getElementById('noticeProgress');
   const icons={general:'📢',urgent:'🚨',exam:'📝',meal:'🍱',return:'⏰',praise:'🏆',quiet:'🤫'};
   const labels={general:'전체 공지',urgent:'긴급 공지',exam:'시험 안내',meal:'식사·휴게 안내',return:'복귀·귀가 안내',praise:'칭찬·축하',quiet:'정숙 안내'};
-  let immediate=null,scheduled={},visibleId=null,hideTimer=null,lastShown={};
+  const screenParams=new URLSearchParams(location.search),noticeGroup=screenParams.get('group')||localStorage.getItem('jjun.display.group')||'studyroom'; let immediate=null,legacyImmediate=null,scheduled={},visibleId=null,hideTimer=null,lastShown={};
   try{lastShown=JSON.parse(localStorage.getItem('sparta.display.notice.lastShown')||'{}')}catch(_){lastShown={}}
   const now=()=>Date.now();
   const ts=v=>{if(v==null)return 0;if(typeof v==='number')return v;if(typeof v==='string')return Date.parse(v)||0;return Number(v)||0};
   function activeWindow(n,t=now()){const st=ts(n.startAt||n.startAtMs),en=ts(n.endAt||n.endAtMs);return n.enabled!==false&&n.status!=='ended'&&(!st||t>=st)&&(!en||t<=en)}
-  function chooseScheduled(){const t=now();return Object.entries(scheduled||{}).map(([id,n])=>({id,...n})).filter(n=>activeWindow(n,t)).sort((a,b)=>(Number(b.priority||0)-Number(a.priority||0))||(ts(b.createdAtMs||b.createdAt)-ts(a.createdAtMs||a.createdAt)))[0]||null}
+  function targetOkHere(n){const tar=n?.target||'all';return tar==='all'||tar===noticeGroup||(tar==='test'&&noticeGroup==='test')} function chooseScheduled(){const t=now();return Object.entries(scheduled||{}).map(([id,n])=>({id,...n})).filter(n=>targetOkHere(n)&&activeWindow(n,t)).sort((a,b)=>(Number(b.priority||0)-Number(a.priority||0))||(ts(b.createdAtMs||b.createdAt)-ts(a.createdAtMs||a.createdAt)))[0]||null}
   function canShow(n){if(!n)return false;const t=now(),dur=Math.max(3,Number(n.durationSec||10))*1000,rep=Math.max(0,Number(n.repeatMinutes||0))*60000,last=Number(lastShown[n.id]||0);if(n.sticky)return true;if(rep>0)return !last||t-last>=rep;return !last}
   function hideNotice(mark=true){clearTimeout(hideTimer);hideTimer=null;overlay.classList.remove('show');if(mark&&visibleId){lastShown[visibleId]=now();try{localStorage.setItem('sparta.display.notice.lastShown',JSON.stringify(lastShown))}catch(_){}}visibleId=null}
   function playNoticeSound(n){if(!n||n.sound==='none'||!n.sound)return;try{playBell(n.type==='urgent'?'strong':'class')}catch(_){};if(n.sound==='voice'){setTimeout(()=>{try{speak(`${n.title||'공지'}. ${n.message||''}`)}catch(_){}},400)}}
   function showNotice(n){if(!n||!canShow(n))return;if(visibleId===n.id&&overlay.classList.contains('show'))return;clearTimeout(hideTimer);visibleId=n.id;card.className=`noticeCard type-${n.type||'general'} ${n.mode==='full'?'mode-full':''}`;typeEl.textContent=`${icons[n.type]||'📢'} ${labels[n.type]||'전체 공지'}`;titleEl.textContent=n.title||'안내';messageEl.textContent=n.message||'';const sec=Math.max(3,Math.min(3600,Number(n.durationSec||10)));metaEl.textContent=n.sticky?'ERP에서 공지를 내릴 때까지 표시됩니다.':`${sec}초 동안 표시됩니다.`;progress.style.display=n.sticky?'none':'block';progress.innerHTML='<i></i>';const bar=progress.firstElementChild;if(bar)bar.style.animationDuration=sec+'s';overlay.classList.add('show');playNoticeSound(n);if(!n.sticky)hideTimer=setTimeout(()=>hideNotice(true),sec*1000)}
   function evaluate(){const t=now();let n=null;if(immediate&&activeWindow(immediate,t))n={id:immediate.id||'current',...immediate};else n=chooseScheduled();if(!n){if(overlay.classList.contains('show'))hideNotice(false);return}showNotice(n)}
-  rtdb.ref('display/currentNotice').on('value',s=>{immediate=s.val();if(!immediate&&visibleId&&String(visibleId).startsWith('current'))hideNotice(false);evaluate()},e=>console.warn('[DISPLAY currentNotice]',e.message));
+  rtdb.ref('display/currentNotice').on('value',s=>{legacyImmediate=s.val();if(!immediate){const n=legacyImmediate;if(n&&targetOkHere(n))immediate=n;evaluate()}},e=>console.warn('[DISPLAY currentNotice]',e.message)); rtdb.ref('display/currentByTarget/'+noticeGroup).on('value',s=>{const direct=s.val();immediate=direct||(legacyImmediate&&targetOkHere(legacyImmediate)?legacyImmediate:null);if(!immediate&&visibleId&&String(visibleId).startsWith('current'))hideNotice(false);evaluate()},e=>console.warn('[DISPLAY currentByTarget]',e.message));
   rtdb.ref('display/notices').on('value',s=>{scheduled=s.val()||{};evaluate()},e=>console.warn('[DISPLAY notices]',e.message));
   setInterval(evaluate,1000);
   window.addEventListener('online',evaluate);
@@ -1331,7 +1331,7 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
   // Patch central notice target / recurrence by intercepting currentNotice removal is unnecessary; existing V6 handles current. Scheduled recurring notices are additionally surfaced here.
   let scheduled={};db.ref('display/notices').on('value',s=>scheduled=s.val()||{});
   function recurrenceOk(n,now){const r=n.repeatRule||'none';if(r==='none'||r==='10m'||r==='30m'||r==='60m')return true;const st=new Date(Number(n.startAtMs||0)),d=new Date(now);if(!n.startAtMs)return true;const sameTime=d.getHours()===st.getHours()&&d.getMinutes()===st.getMinutes();if(!sameTime)return false;if(r==='daily')return true;if(r==='weekdays')return d.getDay()>=1&&d.getDay()<=5;if(r==='saturday')return d.getDay()===6;return true}
-  setInterval(()=>{const now=Date.now();Object.values(scheduled).forEach(n=>{if(!targetOk(n)||n.enabled===false||n.status==='ended'||!recurrenceOk(n,now))return;/* V6 listener handles normal repeatMinutes; daily rules are copied to current for a short activation window */if(['daily','weekdays','saturday'].includes(n.repeatRule)){const st=new Date(Number(n.startAtMs||0)),d=new Date(now);if(d.getSeconds()<3&&d.getHours()===st.getHours()&&d.getMinutes()===st.getMinutes())db.ref('display/currentNotice').set({...n,publishedAtMs:now}).catch(()=>{})}})},1000);
+  setInterval(()=>{const now=Date.now();Object.values(scheduled).forEach(n=>{if(!targetOk(n)||n.enabled===false||n.status==='ended'||!recurrenceOk(n,now))return;/* V6 listener handles normal repeatMinutes; daily rules are copied to current for a short activation window */if(['daily','weekdays','saturday'].includes(n.repeatRule)){const st=new Date(Number(n.startAtMs||0)),d=new Date(now);if(d.getSeconds()<3&&d.getHours()===st.getHours()&&d.getMinutes()===st.getMinutes())db.ref('display/currentByTarget/'+group).set({...n,target:group,publishedAtMs:now}).catch(()=>{})}})},1000);
   // Screen-target guard for current notices: if another group is targeted, hide overlay immediately.
   db.ref('display/currentNotice').on('value',s=>{const n=s.val();if(n&&!targetOk(n)){const ov=document.getElementById('noticeOverlay');if(ov)ov.classList.remove('show')}});
   function confetti(){const box=document.getElementById('confetti');if(!box)return;box.innerHTML='';for(let i=0;i<55;i++){const x=document.createElement('i');x.style.left=Math.random()*100+'%';x.style.animationDuration=(2+Math.random()*3)+'s';x.style.animationDelay=(-Math.random()*3)+'s';x.style.background=['#ffd84d','#fff','#ff6b78','#6da3ff','#8fe5b6'][i%5];box.appendChild(x)}}
@@ -1360,7 +1360,7 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
   if(!panel||!typeEl||!titleEl||!msgEl)return;
 
   const db=firebase.database();
-  let immediate=null,scheduled={};
+  let immediate=null,legacyImmediate=null,scheduled={};
   const labels={general:'일반',urgent:'긴급',exam:'시험',meal:'식사·휴게',return:'복귀·귀가',praise:'칭찬',quiet:'정숙'};
   const ts=v=>{if(v==null)return 0;if(typeof v==='number')return v;if(typeof v==='string')return Date.parse(v)||0;return Number(v)||0};
   const targetOk=n=>{const t=n?.target||'all';return t==='all'||t==='lobby'};
@@ -1391,7 +1391,7 @@ document.addEventListener("pointerdown",()=>{if(!audioReady)activateAudio(false)
     titleEl.textContent=n.title||'안내';
     msgEl.textContent=n.message||'';
   }
-  db.ref('display/currentNotice').on('value',s=>{immediate=s.val();render()});
+  db.ref('display/currentNotice').on('value',s=>{legacyImmediate=s.val();if(!immediate){const n=legacyImmediate;immediate=(n&&targetOk(n))?n:null;render()}}); db.ref('display/currentByTarget/lobby').on('value',s=>{immediate=s.val()||(legacyImmediate&&targetOk(legacyImmediate)?legacyImmediate:null);render()});
   db.ref('display/notices').on('value',s=>{scheduled=s.val()||{};render()});
   setInterval(render,1000);
 })();
