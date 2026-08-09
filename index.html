@@ -434,8 +434,84 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
 /* 테마 자동 상태 강조 */
 #themeBtn.theme-auto{border-color:rgba(223,171,45,.82);box-shadow:inset 0 0 0 1px rgba(223,171,45,.18)}
 
+
+/* ===== Entrance TV embedded 50:50 mode v1.2 =====
+   The normal display keeps its existing layout.
+   Only ?screen=entrance-tv (or ?group=lobby) uses this compact 16:9-in-half-screen layout. */
+html.entrance-tv .app{
+  padding:8px 10px 8px;
+  gap:8px;
+}
+html.entrance-tv header{
+  min-height:74px;
+  grid-template-columns:minmax(190px,.78fr) minmax(0,1.22fr);
+  gap:8px;
+}
+html.entrance-tv .brand{
+  min-height:70px;
+  border-radius:16px;
+  padding:8px 10px;
+  gap:9px;
+}
+html.entrance-tv .brand img{width:min(150px,17vw);max-height:48px}
+html.entrance-tv .brandTitle{font-size:15px}
+html.entrance-tv .brandSub{font-size:10px;margin-top:2px}
+html.entrance-tv .dayBanner{font-size:9px;padding:4px 6px;margin-top:3px}
+html.entrance-tv .topControls{gap:4px;max-width:none;flex-wrap:nowrap;min-width:0}
+html.entrance-tv .btn{min-height:42px;padding:6px 8px;font-size:10px;border-radius:12px;white-space:nowrap}
+html.entrance-tv .clockBox{min-width:112px;padding:5px 8px;border-radius:12px}
+html.entrance-tv .clockLabel{font-size:9px}
+html.entrance-tv #nowClock{font-size:30px;letter-spacing:-1px}
+html.entrance-tv .statusBtn{min-width:72px;min-height:42px;padding:5px 5px;border-radius:12px}
+html.entrance-tv .statusBtn .main{font-size:10px}
+html.entrance-tv .statusBtn .sub{font-size:7px;margin-top:2px}
+
+/* Critical: never stack hero + today's schedule vertically in the half-screen iframe. */
+@media(max-width:1050px){
+  html.entrance-tv main{
+    grid-template-columns:minmax(0,1.18fr) minmax(250px,.82fr)!important;
+    grid-template-rows:minmax(0,1fr)!important;
+  }
+}
+html.entrance-tv main{
+  grid-template-columns:minmax(0,1.18fr) minmax(250px,.82fr);
+  gap:8px;
+}
+html.entrance-tv .hero,html.entrance-tv .sideCard{border-radius:16px}
+html.entrance-tv .hero{padding:12px 12px 10px}
+html.entrance-tv .statusBadge{font-size:12px;padding:6px 8px;border-radius:10px}
+html.entrance-tv .remainingBox{transform:scale(.78);transform-origin:top right}
+html.entrance-tv .heroTitle{font-size:clamp(44px,6.2vw,82px)}
+html.entrance-tv .heroSub{font-size:clamp(16px,2vw,28px)}
+html.entrance-tv .bottomStats{gap:6px}
+html.entrance-tv .statBox{padding:7px 8px;border-radius:10px}
+html.entrance-tv .statLabel{font-size:9px}
+html.entrance-tv .statValue{font-size:15px}
+html.entrance-tv .statSub{font-size:8px}
+html.entrance-tv .sideCard{padding:10px}
+html.entrance-tv .sideTitle{font-size:17px}
+html.entrance-tv .sideHint{font-size:8px}
+html.entrance-tv .scheduleList{gap:6px}
+html.entrance-tv .slot{min-height:62px;padding:7px 8px;grid-template-columns:52px minmax(0,1fr) 44px;border-radius:11px}
+html.entrance-tv .slotTime{font-size:11px}
+html.entrance-tv .slotTitle{font-size:14px}
+html.entrance-tv .slotSub{font-size:9px}
+html.entrance-tv .slotTag{font-size:8px;padding:4px 5px}
+html.entrance-tv .sideFoot{font-size:8px}
+html.entrance-tv .hero::after{width:min(390px,36vw);height:min(390px,36vw);right:-45px;bottom:-70px}
+
+/* In lobby embed the parent owns fullscreen. */
+html.entrance-tv #fullBtn{border-color:rgba(63,120,255,.42)}
+
 </style></head>
 <body class="mode-open">
+<script>
+(function(){
+  const p=new URLSearchParams(location.search);
+  const entrance=p.get("screen")==="entrance-tv" || p.get("group")==="lobby";
+  if(entrance) document.documentElement.classList.add("entrance-tv");
+})();
+</script>
 <div class="app">
   <header>
     <div class="brand">
@@ -547,10 +623,10 @@ body.scene-focus .brand,body.scene-focus .sideCard{opacity:.48}body.scene-exam{b
     <div class="settingTitle">종소리 유형</div>
     <div class="settingRow"><label>프로필</label>
       <select id="bellProfile">
-        <option value="classic">기본(클래식) · 구버전 원음</option>
-        <option value="school">학교종(또렷) · 구버전 원음</option>
-        <option value="soft">부드럽게 · 구버전 원음</option>
-        <option value="strong">강하게 · 구버전 원음</option>
+        <option value="classic">클래식</option>
+        <option value="school">학교종</option>
+        <option value="soft">부드럽게</option>
+        <option value="strong">강하게</option>
       </select>
     </div>
   </div>
@@ -772,14 +848,6 @@ function renderThree(index){
 function ensureAudio(){
   if(!audioCtx){
     audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-    // 구버전 종소리의 또렷한 울림을 복원하는 컴프레서
-    const comp=audioCtx.createDynamicsCompressor();
-    comp.threshold.setValueAtTime(-20,audioCtx.currentTime);
-    comp.knee.setValueAtTime(18,audioCtx.currentTime);
-    comp.ratio.setValueAtTime(8,audioCtx.currentTime);
-    comp.attack.setValueAtTime(0.003,audioCtx.currentTime);
-    comp.release.setValueAtTime(0.12,audioCtx.currentTime);
-    audioCtx._spartaCompressor=comp;
   }
   return audioCtx;
 }
@@ -794,7 +862,9 @@ async function activateAudio(showMessage=true){
     $("audioGate").classList.remove("show");
     if(showMessage)toast("종소리와 안내 음성을 활성화했습니다.");
     return audioReady;
-  }catch(e){audioReady=false;updateStatusButtons();return false;}
+  }catch(e){
+    audioReady=false;updateStatusButtons();return false;
+  }
 }
 function updateStatusButtons(){
   $("soundStatus").className="statusBtn "+(soundEnabled?"ok sound":"bad");
@@ -806,50 +876,31 @@ function updateStatusButtons(){
 }
 function watchdog(){
   soundEnabled=true;voiceEnabled=true;
-  if(audioCtx){if(audioCtx.state==="suspended")audioCtx.resume().catch(()=>{});audioReady=audioCtx.state==="running"}else audioReady=false;
-  if("speechSynthesis" in window)window.speechSynthesis.resume();updateStatusButtons();
+  if(audioCtx){
+    if(audioCtx.state==="suspended")audioCtx.resume().catch(()=>{});
+    audioReady=audioCtx.state==="running";
+  }else audioReady=false;
+  if("speechSynthesis" in window)window.speechSynthesis.resume();
+  updateStatusButtons();
 }
 
-// ===== 구버전 SPARTA 종소리 엔진 복원 =====
-const bellLengthMult=10.0;
 function playTone(freq,dur,at,gain,wave="sine"){
   if(!soundEnabled||!audioReady||!audioCtx)return;
-  const volume=Math.max(0,Math.min(1,settings.bellVol/100));
-  dur=Math.max(.05,dur*bellLengthMult);
-  const t=audioCtx.currentTime+at, osc=audioCtx.createOscillator(), g=audioCtx.createGain();
+  const osc=audioCtx.createOscillator(),g=audioCtx.createGain();
+  const t=audioCtx.currentTime+at;
   osc.type=wave;osc.frequency.value=freq;
-  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0001,Math.min(1,gain*volume)),t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
-  const osc2=audioCtx.createOscillator(),g2=audioCtx.createGain();osc2.type=wave==="sine"?"triangle":"sine";osc2.frequency.value=freq*2;
-  g2.gain.setValueAtTime(.0001,t);g2.gain.exponentialRampToValueAtTime(Math.max(.0001,Math.min(1,gain*volume*.22)),t+.008);g2.gain.exponentialRampToValueAtTime(.0001,t+dur);
-  osc.connect(g);osc2.connect(g2);const comp=audioCtx._spartaCompressor;if(comp){g.connect(comp);g2.connect(comp);comp.connect(audioCtx.destination)}else{g.connect(audioCtx.destination);g2.connect(audioCtx.destination)}
-  osc.start(t);osc.stop(t+dur+.03);osc2.start(t);osc2.stop(t+dur+.03);
-}
-function clickNoise(when=0,gain=.6){
-  if(!soundEnabled||!audioReady||!audioCtx)return;const t=audioCtx.currentTime+when, n=Math.floor(audioCtx.sampleRate*.02),b=audioCtx.createBuffer(1,n,audioCtx.sampleRate),d=b.getChannelData(0);
-  for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(n/5));const src=audioCtx.createBufferSource(),g=audioCtx.createGain();src.buffer=b;g.gain.setValueAtTime(Math.min(1,gain*(settings.bellVol/100)),t);src.connect(g);const comp=audioCtx._spartaCompressor;if(comp){g.connect(comp);comp.connect(audioCtx.destination)}else g.connect(audioCtx.destination);src.start(t);src.stop(t+.03);
+  g.gain.setValueAtTime(.0001,t);
+  g.gain.exponentialRampToValueAtTime(Math.max(.0001,gain*settings.bellVol/100),t+.01);
+  g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  osc.connect(g);g.connect(audioCtx.destination);osc.start(t);osc.stop(t+dur+.03);
 }
 function playBell(type="class"){
-  if(!audioReady)return;const p=settings.bellProfile,classic=p==="classic",school=p==="school",soft=p==="soft",strong=p==="strong",wave=classic?"sine":school?"triangle":soft?"sine":"square";
-  switch(type){
-    case "class":
-      if(classic){playTone(988,.22,0,.95,wave);playTone(784,.28,.30,.95,wave)}
-      else if(school){playTone(988,.18,0,.95,wave);playTone(988,.18,.24,.95,wave);playTone(1175,.20,.52,.90,wave);playTone(1319,.22,.80,.88,wave)}
-      else if(soft){playTone(659,.42,0,.70,wave);playTone(784,.28,.46,.55,"triangle")}
-      else if(strong){clickNoise(0,.55);playTone(1047,.16,.02,1,wave);clickNoise(.22,.50);playTone(1319,.16,.24,1,wave);clickNoise(.44,.45);playTone(1568,.18,.46,.95,wave)}break;
-    case "break":
-      if(classic){playTone(784,.14,0,.85,wave);playTone(784,.14,.18,.85,wave)}
-      else if(school){playTone(659,.12,0,.90,wave);playTone(659,.12,.16,.90,wave);playTone(523,.14,.36,.85,wave)}
-      else if(soft)playTone(523,.30,0,.60,"sine");
-      else if(strong){clickNoise(0,.45);playTone(880,.12,.02,.95,wave);clickNoise(.18,.40);playTone(880,.12,.20,.95,wave)}break;
-    case "meal":
-      if(classic){playTone(659,.18,0,.85,wave);playTone(523,.18,.22,.80,wave);playTone(659,.18,.44,.85,wave)}
-      else if(school){playTone(523,.18,0,.85,wave);playTone(659,.18,.22,.88,wave);playTone(784,.20,.48,.90,wave)}
-      else if(soft){playTone(440,.46,0,.62,"sine");playTone(523,.28,.50,.50,"triangle")}
-      else if(strong){clickNoise(0,.50);playTone(740,.14,.02,1,wave);clickNoise(.22,.45);playTone(988,.14,.24,1,wave);clickNoise(.44,.40);playTone(1319,.18,.46,.95,wave)}break;
-    case "open": soft?playTone(440,.40,0,.55,"sine"):playTone(523,.22,0,.80,wave);break;
-    case "night": if(soft)playTone(392,.42,0,.55,"sine");else{playTone(880,.16,0,.75,wave);playTone(740,.18,.22,.70,wave)}break;
-    default: playTone(880,.18,0,.75,wave);
-  }
+  if(!audioReady)return;
+  const p=settings.bellProfile;
+  if(p==="school"){playTone(988,.28,0,.8,"triangle");playTone(988,.28,.34,.8,"triangle");playTone(1319,.32,.72,.75,"triangle")}
+  else if(p==="soft"){playTone(523,.55,0,.55);playTone(659,.45,.58,.45)}
+  else if(p==="strong"){playTone(1047,.25,0,.9,"square");playTone(1319,.25,.30,.9,"square");playTone(1568,.30,.62,.85,"square")}
+  else{playTone(988,.38,0,.75);playTone(784,.46,.42,.72)}
 }
 function speak(text){
   if(!voiceEnabled||!("speechSynthesis" in window))return;
@@ -956,7 +1007,18 @@ $("pwOk").addEventListener("click",unlockAdmin);
 $("pwCancel").addEventListener("click",()=>$("unlockModal").classList.remove("show"));
 $("pwInput").addEventListener("keydown",e=>{if(e.key==="Enter")unlockAdmin()});
 
-$("fullBtn").addEventListener("click",async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen()}catch(e){}});
+$("fullBtn").addEventListener("click",async()=>{
+  try{
+    const p=new URLSearchParams(location.search);
+    const entrance=p.get("screen")==="entrance-tv" || p.get("group")==="lobby";
+    if(entrance && window.parent!==window){
+      window.parent.postMessage({type:"JJUN_REQUEST_PARENT_FULLSCREEN"},"*");
+      return;
+    }
+    if(!document.fullscreenElement) await document.documentElement.requestFullscreen();
+    else await document.exitFullscreen();
+  }catch(e){}
+});
 $("themeBtn").addEventListener("click",()=>{const order=["auto","dark","light"];const cur=order.includes(settings.theme)?settings.theme:"auto";settings.theme=order[(order.indexOf(cur)+1)%order.length];applySettingsUI();persistSettings()});
 ["soundStatus","voiceStatus","audioStatus"].forEach(id=>$(id).addEventListener("click",()=>activateAudio(true)));
 $("audioGateBtn").addEventListener("click",()=>activateAudio(true));
